@@ -3,6 +3,8 @@ title: "Acoustic Data Analysis Group Project"
 output: html_document
 ---
 
+Import Libraries
+
 ```{r}
 #install.packages("readr")
 #install.packages("tuneR")
@@ -13,6 +15,13 @@ library(tuneR)
 library(seewave)
 library(soundgen)
 ```
+
+The Dataset:
+Sound files used for this project were downloaded from Dryad. They were recorded male zebrafinch songs that were used as playback stimuli in the following study:
+
+D'Amelio, Pietro B. et al. (2018), Data from: Individual recognition of opposite sex vocalizations in the zebra finch, Dryad, Dataset, https://doi.org/10.5061/dryad.4g8b7
+
+
 
 ```{r}
 aud1 <- "zebra finch songs/f_mal11_song_6.wav"
