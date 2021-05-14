@@ -3,26 +3,98 @@ title: "Acoustic Data Analysis Group Project"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
+install.packages("readr")
+install.packages("tuneR")
+library(readr)
+library(tuneR)
 ```
 
-## R Markdown
+```{r}
+aud1 <- "zebra finch songs/f_mal11_song_6.wav"
+dat1 <- readWave(aud1)
+str(dat1)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+aud2 <- "zebra finch songs/f_mal1_song_1.wav"
+dat2 <- readWave(aud2)
+str(dat2)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+aud3 <- "zebra finch songs/f_mal5_song_1.wav"
+dat3 <- readWave(aud3)
+str(dat3)
 
-```{r cars}
-summary(cars)
+aud4 <- "zebra finch songs/m_mal2_song_1.wav"
+dat4 <- readWave(aud4)
+str(dat4)
+
+aud5 <- "zebra finch songs/m_mal9_song_4.wav"
+dat5 <- readWave(aud5)
+str(dat5)
+
 ```
 
-## Including Plots
+```{r}
+par(mfrow=c(3,2))
+sig1 <- dat1@left
+sig1 = sig1 - mean(sig1)
+# plot waveform
+plot(sig1, type = 'l', xlab = 'Samples', ylab = 'Amplitude')
 
-You can also embed plots, for example:
+sig2 <- dat2@left
+sig2 = sig2 - mean(sig2)
+# plot waveform
+plot(sig2, type = 'l', xlab = 'Samples', ylab = 'Amplitude')
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+sig3 <- dat3@left
+sig3 = sig3 - mean(sig3)
+# plot waveform
+plot(sig3, type = 'l', xlab = 'Samples', ylab = 'Amplitude')
+
+sig4 <- dat4@left
+sig4 = sig4 - mean(sig4)
+# plot waveform
+plot(sig4, type = 'l', xlab = 'Samples', ylab = 'Amplitude')
+
+sig5 <- dat5@left
+sig5 = sig5 - mean(sig2)
+# plot waveform
+plot(sig5, type = 'l', xlab = 'Samples', ylab = 'Amplitude')
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+install.packages("seewave")
+library(seewave)
+```
+
+```{r}
+par(mfcol=c(3,2))
+
+data(sig1)
+spectro(sig1,f=44100,
+palette=temp.colors,
+collevels=seq(-100,0,1))
+
+data(sig2)
+spectro(sig2,f=44100,
+palette=temp.colors,
+collevels=seq(-100,0,1))
+
+data(sig3)
+spectro(sig3,f=44100,
+palette=temp.colors,
+collevels=seq(-100,0,1))
+
+data(sig4)
+spectro(sig4,f=44100,
+palette=temp.colors,
+collevels=seq(-100,0,1))
+
+data(sig5)
+spectro(sig5,f=44100,
+palette=temp.colors,
+collevels=seq(-100,0,1))
+
+
+```
+
