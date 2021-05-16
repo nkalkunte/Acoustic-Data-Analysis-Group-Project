@@ -53,7 +53,6 @@ str(dat1)
 While there are various ways to visualize the data encompassed in a sound file, by the far the most common is plotting the amplitude. @Smruti: can you explain how this code works? what does the @left do and why do we need to subtract the mean? Also in the xlab samples or should it be time?
 ```{r}
 sig1 <- dat1@left
-sig1 = sig1 - mean(sig1)
 # plot waveform
 plot(sig1, type = 'l', xlab = 'Samples', ylab = 'Amplitude')
 title('Sample 1')
@@ -90,8 +89,7 @@ title('Sample 5')
 ```
 Another common visualization of sound files are Spectrograms.These represent the variation of sounds frequency over time. The spectrogram below has been overlaid by an amplitude plot. The loudest amplitude in the signal shown is 0dB - in red. 
 The spectro() function in the seewave package allows us to plot this spectrogram. 
-spectro() requires the signal to be plotted, f = frequency of the wave, 
-@Smruti, please ad information what spectrograms are and why they are important/ what they tell us. Then plese explean the steps of the code.
+spectro() requires the signal to be plotted, f = sampling frequency of the wave, palette = colour palette for amp, collevels = set of levels used to define a range of amplitudes in the spectrogram.
 
 ```{r}
 par(mfrow=c(3,2))
@@ -99,7 +97,7 @@ par(mfrow=c(3,2))
 #data(sig1)
 spectro(sig1,f=44100,
 palette=temp.colors,
-collevels=seq(-100,0,50))
+collevels=seq(-100,0,1))
 title("Sample 1")
 
 #data(sig2)
