@@ -68,8 +68,7 @@ library(seewave)
 ```
 
 ```{r}
-par(mfcol=c(3,2))
-
+par(mfrow=c(3,2))
 data(sig1)
 spectro(sig1,f=44100,
 palette=temp.colors,
