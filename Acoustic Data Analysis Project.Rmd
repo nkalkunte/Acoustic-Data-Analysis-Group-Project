@@ -22,7 +22,7 @@ library(tidyverse)
 
 - For example, the frequencies of animal vocalizations often correlate with body size, and the rate of delivery of notes in songs often correlates with male condition. This can give us an idea as to why receivers often prefer vocalizations that are lower in frequency and delivered at a faster rate. 
 
-- To find these correlations, it is necessary to be abel to extract spectral and temporal values from recordings of vocalizations. There are several packages in R which allow us to do this, which we will discuss today.
+- To find these correlations, it is necessary to be able to extract spectral and temporal values from recordings of vocalizations. There are several packages in R which allow us to do this, which we will discuss today.
 
 
 # The Dataset:
@@ -30,19 +30,31 @@ Sound files used for this project were downloaded from Dryad. They were lab-reco
 
 D'Amelio, Pietro B. et al. (2018), Data from: Individual recognition of opposite sex vocalizations in the zebra finch, Dryad, Dataset, https://doi.org/10.5061/dryad.4g8b7
 
-# Acounstic Data in R
-We should give a background on the wave data class. 
+# Acoustic Data in R
 
 Objects of the wave class have the following structure
-.. @left : NUMERIC
-.. @right : NUMERIC
-.. @stereo : LOGICAL
+- .. @left : NUMERIC
+
+
+- .. @right : NUMERIC
+
+
+- .. @stereo : LOGICAL
+
 the wave can be 'monophonic' (one channel for recording and play back) or 'stereophonic' (two audio channels) 
-.. @samp.rate :NUMERIC
-number of times the audio has been sampled, 44100 for CD quality 
-.. @bit : NUMERIC
+
+
+- .. @samp.rate :NUMERIC
+
+number of times the audio has been sampled, 44100 for CD quality
+
+- .. @bit : NUMERIC
+
 sound pressure values as integer values, 16 for CD quality
-.. @pcm : LOGICAL
+
+
+- .. @pcm : LOGICAL
+
 PCM or IEEE_FLOAT format 
 
 
@@ -160,11 +172,11 @@ Having visualized our data, now we may pull out some characteristics from our wa
 
 Total entropy is a measure of the noisiness of a signal. This is a useful early parameter to calculate as it may indicate the validity of all other parameters and also if a data cleaning strategy should be employed. Total entropy may be calculated using the H function from the seewave package. 
 
-The Dominant frequency (DF) is a  useful characteristic of species calls. It is defined as the frequency of sound with the highest amplitude in our sample at each time point. We can easily find the DF of our samples using the dfreq function in the seewave package. In order to get the dominant frequency across the entire recording, we need to set the window length in dfreq to the lenght of each signal.
+The Dominant frequency (DF) is a  useful characteristic of species calls. It is defined as the frequency of sound with the highest amplitude in our sample at each time point. We can easily find the DF of our samples using the dfreq function in the seewave package. In order to get the dominant frequency across the entire recording, we need to set the window length in dfreq to the length of each signal.
 
 Fundamental Frequency (FF) is another useful metric of vocalizations. Defined as the lowest frequency of a waveform, it is the frequency that is perceived to be lowest by mammalian ears. We may find FF using the fund function from the seewave package. 
 
-For convinience, extraction of these parameters are bundled in a custom written function, called featExtract. 
+For convenience, extraction of these parameters are bundled in a custom written function, called featExtract. 
 
 ```{r}
 featExtract = function(wave){
@@ -288,3 +300,12 @@ ssm_repeat=ssm(LL_repeat)
 ```
 
 - You can see that the red lines indicating strong correlations appear where this repeated phrase is located. Thus, you can see how this visualization could be useful when checking for repeated elements in a vocalization.  
+
+## References
+
+
+- Anikin A (2019). “Soundgen: An open-source tool for synthesizing nonverbal vocalizations.” Behavior Research Methods, 51(2), 778–792. doi: 10.3758/s13428-018-1095-7, https://doi.org/10.3758/s13428-018-1095-7.
+
+- Sueur J, Aubin T, Simonis C (2008). “Seewave: a free modular tool for sound analysis and synthesis.” Bioacoustics, 18, 213-226. http://www.tandfonline.com/doi/abs/10.1080/09524622.2008.9753600.
+
+
