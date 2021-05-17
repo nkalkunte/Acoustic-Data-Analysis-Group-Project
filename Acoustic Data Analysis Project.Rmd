@@ -5,6 +5,18 @@ output: html_document
 # Acounstic Data in R
 We should give a background on the wave data class. 
 
+Objects of the wave class have the following structure
+.. @left : NUMERIC
+.. @right : NUMERIC
+.. @stereo : LOGICAL
+the wave can be 'monophonic' (one channel for recording and play back) or 'stereophonic' (two audio channels) 
+.. @samp.rate :NUMERIC
+number of times the audio has been sampled, 44100 for CD quality 
+.. @bit : NUMERIC
+sound pressure values as integer values, 16 for CD quality
+.. @pcm : LOGICAL
+PCM or IEEE_FLOAT format 
+
 Import Libraries
 ```{r}
 #install.packages("readr")
@@ -44,54 +56,52 @@ dat4 <- readWave(aud4)
 aud5 <- "zebra finch songs/m_mal9_song_4.wav"
 dat5 <- readWave(aud5)
 
-#Playing and shoring Data strucutre of sound files
+#Playing and shoring Data structure of sound files
 play(aud1)
 str(dat1)
 ```
 
 ## Visualizing Sound Files
-While there are various ways to visualize the data encompassed in a sound file, by the far the most common is plotting the amplitude. @Smruti: can you explain how this code works? what does the @left do and why do we need to subtract the mean? Also in the xlab samples or should it be time?
+While there are various ways to visualize the data encompassed in a sound file, by the far the most common is plotting the amplitude. 
+Since our data is monophonic and has one channel, we plot the left channel (@left) using the plot function. 
 ```{r}
 sig1 <- dat1@left
-sig1 = sig1 - mean(sig1)
 # plot waveform
-plot(sig1, type = 'l', xlab = 'Samples', ylab = 'Amplitude')
+plot(sig1, type = 'l', xlab = 'Time', ylab = 'Amplitude')
 title('Sample 1')
 
 par(mfrow=c(3,2))
 # plot waveform
-plot(sig1, type = 'l', xlab = 'Samples', ylab = 'Amplitude')
+plot(sig1, type = 'l', xlab = 'Time', ylab = 'Amplitude')
 title('Sample 1')
 
 sig2 <- dat2@left
-sig2 = sig2 - mean(sig2)
 # plot waveform
-plot(sig2, type = 'l', xlab = 'Samples', ylab = 'Amplitude')
+plot(sig2, type = 'l', xlab = 'Time', ylab = 'Amplitude')
 title('Sample 2')
 
 sig3 <- dat3@left
-sig3 = sig3 - mean(sig3)
 # plot waveform
-plot(sig3, type = 'l', xlab = 'Samples', ylab = 'Amplitude')
+plot(sig3, type = 'l', xlab = 'Time', ylab = 'Amplitude')
 title('Sample 3')
 
 sig4 <- dat4@left
-sig4 = sig4 - mean(sig4)
 # plot waveform
-plot(sig4, type = 'l', xlab = 'Samples', ylab = 'Amplitude')
+plot(sig4, type = 'l', xlab = 'Time', ylab = 'Amplitude')
 title('Sample 4')
 
 sig5 <- dat5@left
-sig5 = sig5 - mean(sig5)
 # plot waveform
-plot(sig5, type = 'l', xlab = 'Samples', ylab = 'Amplitude')
+plot(sig5, type = 'l', xlab = 'Time', ylab = 'Amplitude')
 title('Sample 5')
 
 ```
-Another common visualization of sound files are Spectrograms. @Smruti, please ad information what spectrograms are and why they are important/ what they tell us. Then plese explean the steps of the code.
-also I am getting a "data set ‘sig1’ not founddata set ‘sig2’ not founddata set ‘sig3’ not founddata set ‘sig4’ not founddata set ‘sig5’ not found" error, are you seeing that too? Do we need to call data(sigX) every time? It seems to run fine for me without it
+Another common visualization of sound files are Spectrograms.These represent the variation of sounds frequency over time. The spectrogram below has been overlaid by an amplitude plot. The loudest amplitude in the signal shown is 0dB - in red. 
+The spectro() function in the seewave package allows us to plot this spectrogram. 
+spectro() requires the signal to be plotted, f = sampling frequency of the wave, palette = colour palette for amp, collevels = set of levels used to define a range of amplitudes in the spectrogram.
+
 ```{r}
-par(mfcol=c(3,2))
+par(mfrow=c(3,2))
 
 #data(sig1)
 spectro(sig1,f=44100,
