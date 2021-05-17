@@ -275,7 +275,7 @@ paste("Mean syllable length is ", mn_syl, "ms, and the median syllable length is
 mn_pause=round(mean(seg_LL_1$syllables$pauseLen, na.rm = TRUE), digits=2)
 md_pause=round(median(seg_LL_1$syllables$pauseLen, na.rm = TRUE), digits=2)
 
-paste("Mean inter-syllable pause length is ", mn_pause, "ms, and the median syllable length is", md_pause, "ms.")
+paste("Mean inter-syllable pause length is ", mn_pause, "ms, and the median inter-syllable pause length is", md_pause, "ms.")
 ```
 
 
