@@ -2,21 +2,6 @@
 title: "Acoustic Data Analysis Group Project"
 output: html_document
 ---
-# Acounstic Data in R
-We should give a background on the wave data class. 
-
-Objects of the wave class have the following structure
-.. @left : NUMERIC
-.. @right : NUMERIC
-.. @stereo : LOGICAL
-the wave can be 'monophonic' (one channel for recording and play back) or 'stereophonic' (two audio channels) 
-.. @samp.rate :NUMERIC
-number of times the audio has been sampled, 44100 for CD quality 
-.. @bit : NUMERIC
-sound pressure values as integer values, 16 for CD quality
-.. @pcm : LOGICAL
-PCM or IEEE_FLOAT format 
-
 Import Libraries
 ```{r}
 #install.packages("readr")
@@ -31,10 +16,34 @@ library(soundgen)
 library(tidyverse)
 ```
 
-The Dataset:
-Sound files used for this project were downloaded from Dryad. They were recorded male zebrafinch songs that were used as playback stimuli in the following study:
+# Acoustic Data Analysis
+
+- Analysis of acoustic data can have many uses, from engineering to audio production. In behavioral ecology, analyzing vocalizations can allow us to uncover which selection pressures have shaped the form of animal signals and signal preferences.
+
+- For example, the frequencies of animal vocalizations often correlate with body size, and the rate of delivery of notes in songs often correlates with male condition. This can give us an idea as to why receivers often prefer vocalizations that are lower in frequency and delivered at a faster rate. 
+
+- To find these correlations, it is necessary to be abel to extract spectral and temporal values from recordings of vocalizations. There are several packages in R which allow us to do this, which we will discuss today.
+
+
+# The Dataset:
+Sound files used for this project were downloaded from Dryad. They were lab-recorded male zebrafinch songs that were used as playback stimuli in the following study:
 
 D'Amelio, Pietro B. et al. (2018), Data from: Individual recognition of opposite sex vocalizations in the zebra finch, Dryad, Dataset, https://doi.org/10.5061/dryad.4g8b7
+
+# Acounstic Data in R
+We should give a background on the wave data class. 
+
+Objects of the wave class have the following structure
+.. @left : NUMERIC
+.. @right : NUMERIC
+.. @stereo : LOGICAL
+the wave can be 'monophonic' (one channel for recording and play back) or 'stereophonic' (two audio channels) 
+.. @samp.rate :NUMERIC
+number of times the audio has been sampled, 44100 for CD quality 
+.. @bit : NUMERIC
+sound pressure values as integer values, 16 for CD quality
+.. @pcm : LOGICAL
+PCM or IEEE_FLOAT format 
 
 
 ## Importing Data Files
@@ -57,7 +66,7 @@ aud5 <- "zebra finch songs/m_mal9_song_4.wav"
 dat5 <- readWave(aud5)
 
 #Playing and shoring Data structure of sound files
-setWavPlayer('/usr/bin/afplay') #using the built in command line audio player
+#setWavPlayer('/usr/bin/afplay') #using the built in command line audio player
 listen(dat1)
 str(dat1)
 ```
@@ -192,7 +201,18 @@ play(LL)
 ```
 
 ## Visualizing Temporal Characteristics of Sound 
-When analyzing animal vocalizations, or other sounds, temporal characteristics are often of interest as different calls typically differ in temporal structure. The soundGen package has many functions to tease out the temporal patterns present in vocalizations. First we will use the segment() function to look for patterns in our zebrafinch vocalizations. This function allows us to identify bursts of vocal activity, as well as identify continuous syllables. The key parameters to set here relate to noise, as our signal must be teased apart from any background noise to be properly processed. Sounds recorded in the field can have a great deal of environmental noise due to abiotic and biotic sources, so tweaking parameters related to noise will be crucial for allowing the algorithm to differentiate between signal and noise. Sounds recorded in the lab will have less noise, but may still have unwanted noise due to breathing sounds or movement of the focal animal. The segment() function assumes that the sound of interest to us will be the loudest sound in our recording, and then the user can set the proportion of the soundfile they expect to contain noise (propNoise), as well as the signal-to-noise ratio (SNR) that must be exceeded in order for the sound to be identified as our signal. Users need to tune these to find acceptable balance between false-positives and false-negatives when detecting signals. There are also a few methods you can use, but because we have already been talking about spectrograms, I have opted for the spectrogram method (method='spec').  Setting the shortest acceptable syllable length (in ms) will also be important. this sets a lower bound on what can be categorized as a syllable. Here we set it to 5ms (shortestSyl = 5).
+- When analyzing animal vocalizations, or other sounds, temporal characteristics are often of interest as different call types typically differ in temporal structure. The soundGen package has many functions to tease out the temporal patterns present in vocalizations. 
+
+- First we will use the segment() function to look for patterns in our zebrafinch vocalizations. This function allows us to identify bursts of vocal activity, as well as identify continuous syllables. 
+
+- The key parameters to set here relate to noise, as our signal must be teased apart from any background noise to be properly processed. Sounds recorded in the field can have a great deal of environmental noise due to abiotic and biotic sources, so tweaking parameters related to noise will be crucial for allowing the algorithm to differentiate between signal and noise. Sounds recorded in the lab will have less noise, but may still have unwanted noise due to breathing sounds or movement of the focal animal. 
+
+- The segment() function assumes that the sound of interest to us will be the loudest sound in our recording, and then the user can set the proportion of the soundfile they expect to contain noise (propNoise), as well as the signal-to-noise ratio (SNR) that must be exceeded in order for the sound to be identified as our signal. Users need to tune these to find acceptable balance between false-positives and false-negatives when detecting signals. 
+
+- Setting the shortest acceptable syllable length (in ms) will also be important. this sets a lower bound on what can be categorized as a syllable. Here we set it to 5ms (shortestSyl = 5).
+
+- There are also a few methods you can use, but because we have already been talking about spectrograms, I have opted for the spectrogram method (method='spec'). 
+
 ### Plot with SNR= 2
 
 ```{r}
@@ -205,7 +225,7 @@ seg_LL_2=segment(LL,
                showLegend=TRUE )
 ```
 
-Here, we see red stars denoting notes whihc have been classified as syllables, blue lines denoting the durations of these continuous, separate syllables, and a green line envelope denoting bursts of sound activity. Not all peaks that may be of interest to us are flagged as significantly syllabic (e.g. ~200ms-300ms). We can tweak the parameters and see whether this changes things.
+- Here, we see red stars denoting which segments have been classified as syllables, blue lines denoting the durations of these continuous, separate syllables, and a green line envelope denoting bursts of sound activity. Not all peaks that may be of interest to us are flagged as significantly syllabic (e.g. ~200ms-300ms). We can tweak the parameters and see whether this changes things.
 
 
 ### Plot with SNR = 1
@@ -220,14 +240,18 @@ seg_LL_1=segment(LL,
                showLegend=TRUE )
 ```
 
-More peaks are recognized as syllables. The best choice of these parameters will depend on the question of interest and knowledge regarding the study species. 
+- More peaks are recognized as syllables. The best choice of these parameters will depend on the question of interest and knowledge regarding the study species. 
 
   
 
 
 ## Extracting Temporal values
 
-As well as visualizing the burst and syllable structure, you can extract temporal values. This could be useful in comparing/contrasting different vocalization types. For example, in many acoustically-signalling animals, call rate is important in female choice. Thus, you might expect syllable length and inter-syllable pauses to differ between vocalizations shaped by mate choice, and those adapted for other purposes. After performing segmentation analysis, we can extract temporal summary statistics.
+- As well as visualizing the burst and syllable structure, you can extract temporal values after making an object using the segment() function. This could be useful in comparing/contrasting different vocalization types. 
+
+- For example, in many acoustically-signalling animals, call rate is important in female choice. Thus, you might expect syllable length and inter-syllable pauses to differ between vocalizations shaped by mate choice, and those adapted for other purposes. 
+
+- After performing segmentation analysis, we can extract temporal summary statistics.
 
 ```{r}
 #mean and median length of syllables
@@ -238,21 +262,21 @@ paste("Mean syllable length is ", mn_syl, "ms, and the median syllable length is
 #median pause length (ms)
 mn_pause=round(mean(seg_LL_1$syllables$pauseLen, na.rm = TRUE), digits=2)
 md_pause=round(median(seg_LL_1$syllables$pauseLen, na.rm = TRUE), digits=2)
-paste("Mean inter-syllable pause length is ", mn_pause, "ms, and the median syllable length is", md_pause, "ms.")
 
+paste("Mean inter-syllable pause length is ", mn_pause, "ms, and the median syllable length is", md_pause, "ms.")
 ```
 
 
 
 ## Visualizing Temporal Autocorrelation
 
-We can also plot a self-similarity matrix that visualizes correlations in acoustic properties between different song segments by simply plotting the spectral qualities of the song against itself. In this image, warmer colours indicate higher degrees of similarity between different song segments.
+- We can also plot a self-similarity matrix that visualizes correlations in acoustic properties between different song segments by simply plotting the spectral qualities of the song against itself. In this image, warmer colours indicate higher degrees of similarity between different song segments.
 
 ```{r}
 ssm=ssm(LL)
 ```
 
-There does not seem to be a lot of temporal autocorrelation. Below is an SSM run on an altered portion of the same vocalization, however, I have cut and pasted a phrase found early in the vocalization at an additional 3 times during the song.
+- There does not seem to be a lot of temporal autocorrelation. Below is an SSM run on an altered portion of the same vocalization, however, I have cut and pasted a phrase found early in the vocalization at an additional 3 times during the song.
 
 ```{r}
 LL_repeat=readWave("zebra finch songs/m_mal2_song_1_altered.wav")
@@ -263,4 +287,4 @@ play(LL_repeat)
 ssm_repeat=ssm(LL_repeat)
 ```
 
-You can see that the red lines indicating strong correlations appear where this repeated phrase is located. Thus, you can see how this visualization could be useful when checking for repeated elements in a vocalization.  
+- You can see that the red lines indicating strong correlations appear where this repeated phrase is located. Thus, you can see how this visualization could be useful when checking for repeated elements in a vocalization.  
