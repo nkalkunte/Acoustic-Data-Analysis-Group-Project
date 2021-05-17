@@ -127,19 +127,15 @@ title("Sample 5")
 ```
 
 ## Summary Characteristics of Sound Files
-Dominant frequency (DF) is a  useful characteristic of species calls. It is defined as the frequency of sound with the highest amplitude in our sample at each time point. We can easily find the DF of our samples using the dfreq function in the seewave package. 
+Dominant frequency (DF) is a  useful characteristic of species calls. It is defined as the frequency of sound with the highest amplitude in our sample at each time point. We can easily find the DF of our samples using the dfreq function in the seewave package. In order to get the dominant frequency across the entire recording, we need to set the window length in dfreq to the lenghtof each signal.
 ```{r}
-df1 = as_tibble(dfreq(dat1))
-df2 = as_tibble(dfreq(dat2))
-df3 = as_tibble(dfreq(dat3))
-df4 = as_tibble(dfreq(dat4))
-df5 = as_tibble(dfreq(dat5))
+#Calculating Dominant frequency across entire signals
+df1 = dfreq(dat1,wl = length(sig1))[2]
+df2 = dfreq(dat2,wl = length(sig2))[2]
+df3 = dfreq(dat3,wl = length(sig3))[2]
+df4 = dfreq(dat4,wl = length(sig4))[2]
+df5 = dfreq(dat5,wl = length(sig5))[2]
 
-# Plotting Dominant Frequencies
-df1$Sample = "Sample 1"
-df2$Sample = "Sample 2"
-df3$Sample = "Sample 3"
-df1$Sample = "Sample 1"
 
 ```
 
