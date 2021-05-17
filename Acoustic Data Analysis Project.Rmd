@@ -38,7 +38,7 @@ D'Amelio, Pietro B. et al. (2018), Data from: Individual recognition of opposite
 
 
 ## Importing Data Files
-The tuneR function has various function that facilitate the reading in of different audio file formats. Here we use readWave function to read in .wav files. 
+The tuneR function has various functions that facilitate the reading in of different audio file formats. Here we use readWave function to read in .wav files. 
 ```{r}
 #Sample 1 
 aud1 <- "zebra finch songs/f_mal11_song_6.wav"
@@ -57,19 +57,29 @@ aud5 <- "zebra finch songs/m_mal9_song_4.wav"
 dat5 <- readWave(aud5)
 
 #Playing and shoring Data structure of sound files
-play(aud1)
+setWavPlayer('/usr/bin/afplay') #using the built in command line audio player
+listen(dat1)
 str(dat1)
 ```
 
 ## Visualizing Sound Files
-While there are various ways to visualize the data encompassed in a sound file, by the far the most common is plotting the amplitude. 
+While there are various ways to visualize the data encompassed in a sound file, by the far the most common is plotting the amplitude over time in a plot called an Oscillogram. 
 Since our data is monophonic and has one channel, we plot the left channel (@left) using the plot function. 
 ```{r}
 sig1 <- dat1@left
 # plot waveform
 plot(sig1, type = 'l', xlab = 'Time', ylab = 'Amplitude')
 title('Sample 1')
+```
 
+We can also use the oscillo function from the seewave package.
+```{r}
+oscillo(dat1)
+title('Sample 1')
+```
+
+Now we can plot all of our samples. 
+```{r}
 par(mfrow=c(3,2))
 # plot waveform
 plot(sig1, type = 'l', xlab = 'Time', ylab = 'Amplitude')
@@ -94,7 +104,6 @@ sig5 <- dat5@left
 # plot waveform
 plot(sig5, type = 'l', xlab = 'Time', ylab = 'Amplitude')
 title('Sample 5')
-
 ```
 Another common visualization of sound files are Spectrograms.These represent the variation of sounds frequency over time. The spectrogram below has been overlaid by an amplitude plot. The loudest amplitude in the signal shown is 0dB - in red. 
 The spectro() function in the seewave package allows us to plot this spectrogram. 
@@ -136,21 +145,45 @@ title("Sample 5")
 
 ```
 
-## Summary Characteristics of Sound Files
-Dominant frequency (DF) is a  useful characteristic of species calls. It is defined as the frequency of sound with the highest amplitude in our sample at each time point. We can easily find the DF of our samples using the dfreq function in the seewave package. In order to get the dominant frequency across the entire recording, we need to set the window length in dfreq to the lenghtof each signal.
-```{r}
-#Calculating Dominant frequency across entire signals
-df1 = dfreq(dat1,wl = length(sig1))[2]
-df2 = dfreq(dat2,wl = length(sig2))[2]
-df3 = dfreq(dat3,wl = length(sig3))[2]
-df4 = dfreq(dat4,wl = length(sig4))[2]
-df5 = dfreq(dat5,wl = length(sig5))[2]
+Having visualized our data, now we may pull out some characteristics from our wvaeforms in order to compare samples. 
 
+## Summary Characteristics of Sound Files
+
+Total entropy is a measure of the noisiness of a signal. This is a useful early parameter to calculate as it may indicate the validity of all other parameters and also if a data cleaning strategy should be employed. Total entropy may be calculated using the H function from the seewave package. 
+
+The Dominant frequency (DF) is a  useful characteristic of species calls. It is defined as the frequency of sound with the highest amplitude in our sample at each time point. We can easily find the DF of our samples using the dfreq function in the seewave package. In order to get the dominant frequency across the entire recording, we need to set the window length in dfreq to the lenght of each signal.
+
+Fundamental Frequency (FF) is another useful metric of vocalizations. Defined as the lowest frequency of a waveform, it is the frequency that is perceived to be lowest by mammalian ears. We may find FF using the fund function from the seewave package. 
+
+For convinience, extraction of these parameters are bundled in a custom written function, called featExtract. 
+
+```{r}
+featExtract = function(wave){
+  signal = wave@left
+  d = length(signal)
+  df = dfreq(wave,wl = d, plot = FALSE)[2]
+  ff = fund(wave,wl = d, threshold = 90,plot = FALSE)[,2]
+  ff = ff[!is.na(ff)]
+  h = H(wave)
+  data = tibble('Total Entropy' = h, 'Dominant Frequency' = df,'Fundamental Frequency' = ff)
+  return(data)
+  
+}
+
+feat1 = featExtract(dat1)
+feat2 = featExtract(dat2)
+feat3 = featExtract(dat3)
+feat4 = featExtract(dat4)
+feat5 = featExtract(dat5)
+
+data = rbind(feat1, feat2, feat3, feat4, feat5)
+rownames(data) = c('Sample 1','Sample 2','Sample 3','Sample 4','Sample 5')
+data
 
 ```
 
 
-Luke's section:
+
 
 Use readWave from the tuneR library to read in our wav files:
 
